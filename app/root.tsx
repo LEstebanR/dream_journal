@@ -3,7 +3,6 @@ import {
   Meta,
   Outlet,
   Scripts,
-  LiveReload,
   ScrollRestoration,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
@@ -36,7 +35,6 @@ export function Layout() {
       <body>
         <MainLayout>
           <Outlet />
-          <LiveReload />
         </MainLayout>
         <ScrollRestoration />
         <Scripts />

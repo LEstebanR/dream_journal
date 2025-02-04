@@ -1,5 +1,4 @@
 import { supabase } from "./supabase";
-import { prisma } from "./prisma.server";
 
 // Definir el tipo de usuario de Supabase
 interface SupabaseUser {
@@ -18,11 +17,6 @@ export async function registerUser(
     throw new Error(error?.message || "No se pudo registrar el usuario.");
   }
 
-  // Guardar en Prisma (opcional)
-  await prisma.user.create({
-    data: { id: data.user.id, email: data.user.email! },
-  });
-
   return data.user;
 }
 
@@ -31,6 +25,7 @@ export async function loginUser(
   email: string,
   password: string
 ): Promise<SupabaseUser> {
+  console.log("jhakjshdkajhsdkjash");
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -39,6 +34,7 @@ export async function loginUser(
   if (error || !data.user) {
     throw new Error(error?.message || "No se pudo iniciar sesión.");
   }
+  console.log("DATA", data);
 
   return data;
 }

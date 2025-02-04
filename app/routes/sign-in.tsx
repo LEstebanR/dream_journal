@@ -13,16 +13,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   try {
     const user = await loginUser(email, password);
-
-    // Crear sesión
-    const session = await getSession();
-    session.set("userId", user.id);
-
-    return redirect("/dashboard", {
-      headers: {
-        "Set-Cookie": await commitSession(session),
-      },
-    });
+    console.log(user);
   } catch (error: unknown) {
     return json(
       { error: error instanceof Error ? error.message : "Unknown error" },
