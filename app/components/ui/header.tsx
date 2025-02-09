@@ -1,26 +1,31 @@
 import Button from "./button";
-import { Link, useLocation } from "@remix-run/react";
-
-const click = () => console.log("clicked");
+import { Link, useLocation, Form } from "@remix-run/react";
 
 const Header = () => {
-  const Location = useLocation();
-  const { pathname } = Location;
+  const location = useLocation();
+  const { pathname } = location;
 
   return (
-    <header className="w-fulll flex justify-between p-2">
+    <header className="w-full flex justify-between p-2">
       <Link to="/">
         <p>Logo</p>
       </Link>
       <div className="flex gap-2">
-        <Link to="/log-in">
-          <Button onClick={click}>Log in</Button>
-        </Link>
-        {pathname !== "/sign-in" ? (
-          <Link to="/sign-in">
-            <Button onClick={click}>Sign in</Button>
+        {pathname !== "/log-in" && (
+          <Link to="/log-in">
+            <Button>Log in</Button>
           </Link>
-        ) : null}
+        )}
+        {pathname !== "/sign-in" && (
+          <Link to="/sign-in">
+            <Button>Sign in</Button>
+          </Link>
+        )}
+        {
+          <Form method="post" action="/logout">
+            <Button type="submit">Log Out</Button>
+          </Form>
+        }
       </div>
     </header>
   );

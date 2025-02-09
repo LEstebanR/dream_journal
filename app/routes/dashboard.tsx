@@ -1,5 +1,12 @@
 import AuthenticatedLayout from "~/components/autenticatedLayout";
 import Card from "~/components/ui/card";
+import { json, LoaderFunction } from "@remix-run/node";
+import { requireUserId } from "~/utils/auth";
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const userId = await requireUserId(request);
+  return json({ userId });
+};
 
 export default function Dashboard() {
   return (
