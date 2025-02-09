@@ -8,7 +8,7 @@ type CreateAccountFormProps = {
     name: string;
     email: string;
     password: string;
-  };
+  } | null;
 };
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

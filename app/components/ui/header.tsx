@@ -12,11 +12,16 @@ const Header = () => {
       <Link to="/">
         <p>Logo</p>
       </Link>
-      {pathname !== "/sign-in" ? (
-        <Link to="/sign-in">
-          <Button onClick={click}>Sign in</Button>
+      <div className="flex gap-2">
+        <Link to="/log-in">
+          <Button onClick={click}>Log in</Button>
         </Link>
-      ) : null}
+        {pathname !== "/sign-in" ? (
+          <Link to="/sign-in">
+            <Button onClick={click}>Sign in</Button>
+          </Link>
+        ) : null}
+      </div>
     </header>
   );
 };

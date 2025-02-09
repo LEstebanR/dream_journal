@@ -1,10 +1,7 @@
-import { json, redirect, ActionFunctionArgs } from "@remix-run/node";
-import { useEffect, useState } from "react";
+import { json, ActionFunctionArgs } from "@remix-run/node";
 import CreateAccountForm from "~/components/forms/create-account";
-import LogInForm from "~/components/forms/log-in-form";
 import Button from "~/components/ui/button";
 import { loginUser } from "~/utils/auth";
-import { getSession, commitSession } from "~/utils/session";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -22,27 +19,13 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
-export default function LoginPage() {
-  const [createAccount, setCreateAccount] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  // Verificar si estamos en el cliente
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
+export default function SignInPage() {
   return (
     <div className="w-full max-w-xs mx-auto mt-20 flex flex-col gap-4 items-center">
-      {createAccount ? <CreateAccountForm /> : <LogInForm />}
+      <CreateAccountForm data={null} />
       <p>
-        {createAccount
-          ? "Already have an account?"
-          : "Don't have an account yet?"}{" "}
-        {isClient && (
-          <Button text onClick={() => setCreateAccount(!createAccount)}>
-            {createAccount ? "Log In" : "Create an account"}
-          </Button>
-        )}
+        Already have an account?
+        <Button text>Log In</Button>
       </p>
     </div>
   );
