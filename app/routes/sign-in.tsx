@@ -1,17 +1,20 @@
-import { json, ActionFunctionArgs } from "@remix-run/node";
-import CreateAccountForm from "~/components/forms/create-account";
+import { Form } from "@remix-run/react";
+import { ActionFunctionArgs, json, redirect } from "@remix-run/server-runtime";
+import FormContainer from "~/components/forms/form-container";
+import InputForm from "~/components/forms/input-form";
 import Button from "~/components/ui/button";
-import { loginUser } from "~/utils/auth";
+import { signInUser } from "~/utils/auth";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
+  const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
   try {
-    const user = await loginUser(email, password);
-    console.log(user);
-  } catch (error: unknown) {
+    const headers = await signInUser(email, password, name);
+    return null;
+  } catch (error) {
     return json(
       { error: error instanceof Error ? error.message : "Unknown error" },
       { status: 400 }
@@ -21,12 +24,13 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function SignInPage() {
   return (
-    <div className="w-full max-w-xs mx-auto mt-20 flex flex-col gap-4 items-center">
-      <CreateAccountForm data={null} />
-      <p>
-        Already have an account?
-        <Button text>Log In</Button>
-      </p>
-    </div>
+    <FormContainer>
+      <Form className="flex flex-col gap-4  p-4" method="post">
+        <InputForm label="Name" name="name" />
+        <InputForm label="Email" name="email" type="email" />
+        <InputForm label="Password" name="password" type="password" />
+        <Button type="submit">Submit</Button>
+      </Form>
+    </FormContainer>
   );
 }

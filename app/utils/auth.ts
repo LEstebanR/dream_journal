@@ -81,3 +81,36 @@ export async function requireUserId(request: Request) {
 
   return userId;
 }
+
+export async function signInUser(
+  email: string,
+  password: string,
+  name: string
+) {
+  const { data: signInData, error: signInError } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (signInError) {
+    throw new Error(signInError.message);
+  }
+  console.log("data", signInData);
+
+  const { data: user, error: createUserError } = await supabase
+    .from("User")
+    .insert({
+      id: signInData?.user?.id,
+      email,
+      name,
+    });
+
+  console.log("user", user, createUserError);
+
+  if (createUserError) {
+    throw new Error(createUserError.message);
+  }
+
+  console.log(user);
+  return user;
+}

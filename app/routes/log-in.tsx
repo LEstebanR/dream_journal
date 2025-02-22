@@ -37,7 +37,7 @@ export default function Login() {
       {actionData?.error && <p className="text-red-500">{actionData.error}</p>}
       <p className="w-full text-center mb-2">
         Don&apos;t have an account yet?
-        <Link to="/sign-up">
+        <Link to="/sign-in">
           <Button type="button" text>
             Create an account
           </Button>

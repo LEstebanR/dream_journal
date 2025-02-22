@@ -12,6 +12,7 @@ async function main() {
 
   const email = "test@example.com";
   const password = "Test1234"; // Contraseña para el usuario de prueba
+  const name = "User Test"; // Nombre para el usuario de prueba
 
   // Verificar si el usuario ya existe en Supabase Auth
   const { data: existingUser } = await supabase
@@ -56,6 +57,7 @@ async function main() {
     create: {
       id: userId,
       email,
+      name,
     },
   });
 }

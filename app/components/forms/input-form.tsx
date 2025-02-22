@@ -1,7 +1,7 @@
 type InputFormProps = {
   label: string;
   name: string;
-  type: "text" | "password" | "email";
+  type?: "text" | "password" | "email";
 };
 
 const InputForm = ({ label, name, type = "text" }: InputFormProps) => {
