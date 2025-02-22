@@ -1,39 +1,20 @@
 import { supabase } from "./supabase";
-import { createCookieSessionStorage, redirect, Session } from "@remix-run/node";
+import { createCookieSessionStorage } from "@remix-run/node";
 
-const sessionSecret = process.env.SESSION_SECRET;
-if (!sessionSecret) {
-  throw new Error("SESSION_SECRET must be set");
-}
+const { getSession, commitSession, destroySession } =
+  createCookieSessionStorage({
+    cookie: {
+      name: "__session",
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      secrets: ["tu_secreto_super_seguro"], // ¡Cambia esto!
+      secure: process.env.NODE_ENV === "production",
+    },
+  });
 
-const storage = createCookieSessionStorage({
-  cookie: {
-    name: "RJ_session",
-    secure: process.env.NODE_ENV === "production",
-    secrets: [sessionSecret],
-    sameSite: "lax",
-    path: "/",
-    httpOnly: true,
-  },
-});
-
-export async function getSession(request: Request) {
-  return storage.getSession(request.headers.get("Cookie"));
-}
-
-export async function commitSession(session: Session) {
-  return storage.commitSession(session);
-}
-
-export async function destroySession(session: Session) {
-  return storage.destroySession(session);
-}
-
-export async function loginUser(
-  request: Request,
-  email: string,
-  password: string
-) {
+export { getSession, commitSession, destroySession };
+export async function loginUser(email: string, password: string) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -47,39 +28,6 @@ export async function loginUser(
   if (!user) {
     throw new Error("User not found");
   }
-
-  const session = await getSession(request);
-  session.set("userId", user.id);
-  session.set("userEmail", user.email);
-
-  return {
-    headers: {
-      "Set-Cookie": await commitSession(session),
-    },
-    user,
-  };
-}
-
-export async function LogoutUser(request: Request) {
-  console.log("LOGOUT");
-  await supabase.auth.signOut();
-  const session = await getSession(request);
-  return {
-    headers: {
-      "Set-Cookie": await destroySession(session),
-    },
-  };
-}
-
-export async function requireUserId(request: Request) {
-  const session = await getSession(request);
-  const userId = session.get("userId");
-
-  if (!userId) {
-    throw redirect("/log-in");
-  }
-
-  return userId;
 }
 
 export async function signInUser(
@@ -87,30 +35,17 @@ export async function signInUser(
   password: string,
   name: string
 ) {
-  const { data: signInData, error: signInError } = await supabase.auth.signUp({
+  const { data: user, error: signInError } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: { name },
+    },
   });
 
   if (signInError) {
     throw new Error(signInError.message);
   }
-  console.log("data", signInData);
 
-  const { data: user, error: createUserError } = await supabase
-    .from("User")
-    .insert({
-      id: signInData?.user?.id,
-      email,
-      name,
-    });
-
-  console.log("user", user, createUserError);
-
-  if (createUserError) {
-    throw new Error(createUserError.message);
-  }
-
-  console.log(user);
   return user;
 }

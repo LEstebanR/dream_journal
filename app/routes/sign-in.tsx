@@ -13,7 +13,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   try {
     const headers = await signInUser(email, password, name);
-    return null;
+    return headers;
   } catch (error) {
     return json(
       { error: error instanceof Error ? error.message : "Unknown error" },

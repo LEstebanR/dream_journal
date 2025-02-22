@@ -21,7 +21,9 @@
     "isbot": "4.1.0",
     "prisma": "6.3.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "remix-auth": "^4.1.0",
+    "remix-auth-supabase": "^4.0.2"
   },
   "devDependencies": {
     "@remix-run/dev": "2.15.2",

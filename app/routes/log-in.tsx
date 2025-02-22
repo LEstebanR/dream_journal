@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, json } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
 import FormContainer from "~/components/forms/form-container";
 import InputForm from "~/components/forms/input-form";
@@ -11,8 +11,8 @@ export async function action({ request }: ActionFunctionArgs) {
   const password = formData.get("password") as string;
 
   try {
-    const { headers } = await loginUser(request, email, password);
-    return redirect("/dashboard", { headers });
+    const data = await loginUser(email, password);
+    return data;
   } catch (error) {
     return json(
       { error: error instanceof Error ? error.message : "Unknown error" },
