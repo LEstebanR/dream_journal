@@ -1,5 +1,5 @@
 import { Form } from "@remix-run/react";
-import { ActionFunctionArgs, json, redirect } from "@remix-run/server-runtime";
+import { ActionFunctionArgs, json } from "@remix-run/server-runtime";
 import FormContainer from "~/components/forms/form-container";
 import InputForm from "~/components/forms/input-form";
 import Button from "~/components/ui/button";
@@ -12,7 +12,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const password = formData.get("password") as string;
 
   try {
-    const headers = await signInUser(email, password, name);
+    const headers = await signInUser(email, password, name, request);
     return headers;
   } catch (error) {
     return json(

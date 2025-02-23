@@ -11,7 +11,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const password = formData.get("password") as string;
 
   try {
-    const data = await loginUser(email, password);
+    const data = await loginUser(email, password, request);
     return data;
   } catch (error) {
     return json(

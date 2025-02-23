@@ -1,20 +1,23 @@
 import { supabase } from "./supabase";
-import { createCookieSessionStorage } from "@remix-run/node";
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
-const { getSession, commitSession, destroySession } =
+export const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
     cookie: {
       name: "__session",
       httpOnly: true,
       path: "/",
       sameSite: "lax",
-      secrets: ["tu_secreto_super_seguro"], // ¡Cambia esto!
+      secrets: [process.env.SESSION_SECRET ?? "secret"],
       secure: process.env.NODE_ENV === "production",
     },
   });
 
-export { getSession, commitSession, destroySession };
-export async function loginUser(email: string, password: string) {
+export async function loginUser(
+  email: string,
+  password: string,
+  request: Request
+) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -28,12 +31,21 @@ export async function loginUser(email: string, password: string) {
   if (!user) {
     throw new Error("User not found");
   }
+
+  const session = await getSession(request.headers.get("Cookie"));
+  session.set("user", user);
+  return redirect("/dashboard", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
 }
 
 export async function signInUser(
   email: string,
   password: string,
-  name: string
+  name: string,
+  request: Request
 ) {
   const { data: user, error: signInError } = await supabase.auth.signUp({
     email,
@@ -47,5 +59,22 @@ export async function signInUser(
     throw new Error(signInError.message);
   }
 
-  return user;
+  const session = await getSession(request.headers.get("Cookie"));
+  session.set("user", user);
+  return redirect("/dashboard", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
+}
+
+export async function logOut(request: Request) {
+  console.log("ENNNTROOOO ");
+  await supabase.auth.signOut();
+  const session = await getSession(request.headers.get("cookie"));
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": await destroySession(session),
+    },
+  });
 }
