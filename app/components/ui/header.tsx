@@ -1,19 +1,10 @@
-import { destroySession, getSession, logOut } from "~/utils/auth";
+import { logOut } from "~/utils/auth";
 import Button from "./button";
-import { Link, useLocation, Form } from "@remix-run/react";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { supabase } from "~/utils/supabase";
+import { Link, useLocation } from "@remix-run/react";
+import { ActionFunctionArgs } from "@remix-run/node";
 
 export async function action({ request }: ActionFunctionArgs) {
-  console.log("ENNNTROOOO ");
-  await supabase.auth.signOut();
-  const session = await getSession(request.headers.get("cookie"));
-
-  return redirect("/", {
-    headers: {
-      "Set-Cookie": await destroySession(session),
-    },
-  });
+  logOut(request);
 }
 
 export default function Header() {
@@ -37,9 +28,9 @@ export default function Header() {
           </Link>
         )}
         {
-          <Form method="post">
-            <Button type="submit">LogOut</Button>
-          </Form>
+          <Link to="/log-out">
+            <Button>Logout</Button>
+          </Link>
         }
       </div>
     </header>

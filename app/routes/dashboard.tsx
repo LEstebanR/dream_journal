@@ -9,7 +9,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = session.get("user");
 
   if (!user) {
-    return redirect("/login");
+    return redirect("/log-in");
   }
   return user ? { user } : null;
 };
@@ -23,7 +23,7 @@ export default function Dashboard() {
   return (
     <AuthenticatedLayout>
       <h1 className="text-3xl font-bold">Dashboard</h1>
-      <p>Bienvenido {name || "Usuario"} a tu panel de control.</p>
+      <p>Bienvenido {name} a tu panel de control.</p>
       <Card title="Título de la card" content="Contenido de la card" />
     </AuthenticatedLayout>
   );

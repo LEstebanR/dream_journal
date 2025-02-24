@@ -9,7 +9,7 @@ export const { getSession, commitSession, destroySession } =
       path: "/",
       sameSite: "lax",
       secrets: [process.env.SESSION_SECRET ?? "secret"],
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
     },
   });
 
@@ -69,7 +69,6 @@ export async function signInUser(
 }
 
 export async function logOut(request: Request) {
-  console.log("ENNNTROOOO ");
   await supabase.auth.signOut();
   const session = await getSession(request.headers.get("cookie"));
   return redirect("/", {
