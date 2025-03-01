@@ -8,13 +8,7 @@ export function Header() {
         <h1 className="text-2xl font-bold">Dreams Journal</h1>
       </Link>
       <div className="flex items-center gap-4">
-        <Link href="/login">
-          <Button>LogIn</Button>
-        </Link>
-        <Link href="/sign-in">
-          <Button>SignUp</Button>
-        </Link>
-        <Button>LogOut</Button>
+        <Button variant="outline">Logout</Button>
       </div>
     </header>
   );
